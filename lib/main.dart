@@ -24,6 +24,7 @@ class App extends StatelessWidget {
       uri: GRAPHQL_ENDPOINT,
       child: MaterialApp(
         // title: 'NoteStory',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(primarySwatch: Colors.blue),
         home: HomePage(title: "NoteStory"),
       ),
@@ -66,70 +67,4 @@ class HomePageState extends State<HomePage> {
       ),
     );
   }
-
 }
-
-
-// class Home extends StatefulWidget {
-//   @override
-//   HomeState createState() => new HomeState();
-// }
-
-// class HomeState extends State<Home> with SingleTickerProviderStateMixin {
-//  TabController controller;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     controller = new TabController(length: 2, vsync: this);
-//   }
-
-//   @override
-//   void dispose() {
-//     controller.dispose();
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return new Scaffold(
-//       appBar: new AppBar(
-//         title: new Text("Using Bottom Navigation Bar"),
-//         backgroundColor: Colors.blue,
-//       ),
-
-//       body: new TabBarView(
-//         children: <Widget>[new FirstTab(), new SecondTab()],
-//         controller: controller,
-//       ),
-
-//       bottomNavigationBar: new Material(
-//         color: Colors.blue,
-//         child: new TabBar(
-//           tabs: <Tab>[
-//             new Tab(icon: new Icon(Icons.favorite)),
-//             new Tab(icon: new Icon(Icons.adb))
-//           ],
-//           controller: controller,
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return ClientProvider(
-//       uri: GRAPHQL_ENDPOINT,
-//       child: MaterialApp(
-//         debugShowCheckedModeBanner: false,
-//         home: new DrawerScreen(),
-//         routes: <String, WidgetBuilder> {
-//           SettingsScreen.routeName: (BuildContext context) => new SettingsScreen(),
-//           AccountScreen.routeName: (BuildContext context) => new AccountScreen()
-//         },
-//       ),
-//     );
-//   }
-// }

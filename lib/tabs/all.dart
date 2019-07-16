@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import 'package:note_story_flutter/screens/detail_page.dart';
+import 'package:note_story_flutter/screens/web_view.dart';
 
 String allViewQuery = """
   query RllViewQuery(\$after: String, \$first: Int) {
@@ -19,21 +21,6 @@ String allViewQuery = """
   }
 """;
 
-typedef void FetchMoreCallback(
-  Map<String, dynamic> variables,
-  MergeResults mergeResults,
-);
-
-typedef Map<String, dynamic> MergeResults(
-  dynamic prev,
-  dynamic moreResults,
-);
-
-typedef Widget FetchMoreBuilder(
-  QueryResult result,
-  FetchMoreCallback fetchMore,
-);
-
 class AllTab extends StatefulWidget {
   @override
   QueryFetchMoreState createState() {
@@ -43,8 +30,12 @@ class AllTab extends StatefulWidget {
 
 class QueryFetchMoreState extends State<AllTab> {
   bool _init = false;
+  bool _loading = true;
+  List _edges = [];
+  List<GraphQLError> _errors;
+  bool _hasMore = false;
+
   GraphQLClient _client;
-  QueryResult _currentResult = QueryResult(loading: true);
 
   @override
   void didChangeDependencies() {
@@ -63,10 +54,18 @@ class QueryFetchMoreState extends State<AllTab> {
           'first': 10
         }
       ));
-      print(result);
-      setState(() {
-        _currentResult = result;
-      });
+      if (result.errors != null) {
+        setState(() {
+          _errors = result.errors;
+        });
+      } else {
+        setState(() {
+          _loading = false;
+          _edges = result.data['allViewer']['stories']['edges'];
+          _hasMore = result.data['allViewer']['stories']['pageInfo']['hasNextPage'];
+        });
+      }
+      
     }
   }
 
@@ -74,7 +73,7 @@ class QueryFetchMoreState extends State<AllTab> {
     Map<String, dynamic> variables,
   ) async {
     setState(() {
-      _currentResult = QueryResult(data: _currentResult.data, loading: true);
+      _loading = true;
     });
 
     final QueryOptions nextOptions = QueryOptions(
@@ -85,67 +84,56 @@ class QueryFetchMoreState extends State<AllTab> {
 
     if (result.errors != null) {
       setState(() {
-        _currentResult = QueryResult(data: _currentResult.data, errors: result.errors);
+        _errors = result.errors;
       });
-      return;
+    } else {
+      List newEdges = [..._edges, ...result.data['allViewer']['stories']['edges']];
+      setState(() {
+        _loading = false;
+        _edges = newEdges;
+        _hasMore = result.data['allViewer']['stories']['pageInfo']['hasNextPage'];
+      });
     }
-
-    // final QueryResult mergedResult = QueryResult(
-    //   data: mergeResults(_currentResult.data, result.data),
-    // );
-
-    // setState(() {
-    //   _currentResult = mergedResult;
-    // });
   }
 
   @override
   Widget build(BuildContext context) {
-    print('build..');
-    if (_currentResult.errors != null) {
-      return Text(_currentResult.errors.toString());
+
+    if (_errors != null) {
+      return Text(_errors.toString());
     }
 
-    if (_currentResult.loading) {
+    if (_loading) {
       return Text('Loading');
     }
-    List edges = _currentResult.data['allViewer']['stories']['edges'];
+
     return new Container(
       child: ListView.builder(
-        itemCount: edges.length,
+        itemCount: _edges.length + 1,
         itemBuilder: (context, index) {
-          final node = edges[index]['node'];
-
-          return Text(node['id']);
+          return (index == _edges.length ) ?
+            Container(
+              color: Colors.greenAccent,
+              child: FlatButton(
+                child: _hasMore ? Text("Load More") : Text("没有了。。"),
+                onPressed: _hasMore ? () {
+                  _fetchMore({ 'after': _edges[index - 1]['node']['id']});
+                } : () {},
+              ),
+            ) : ListTile(
+              title: Text(_edges[index]['node']['id']),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetailScreen(id: _edges[index]['node']['id'])
+                    // builder: (context) => WebViewContainer('http://bing.com')
+                  ),
+                );
+              },
+            );
         }
       ),
     );
   }
 }
-// class AllTab extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return new Scaffold(
-//       backgroundColor: Colors.green,
-//       body: new Container(
-//         child: new Center(
-//           child: new Column(
-//             // center the children
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: <Widget>[
-//               new Icon(
-//                 Icons.adb,
-//                 size: 160.0,
-//                 color: Colors.white,
-//               ),
-//               new Text(
-//                 "Second Tab",
-//                 style: new TextStyle(color: Colors.white),
-//               )
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
