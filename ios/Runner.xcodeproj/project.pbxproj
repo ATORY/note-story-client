@@ -81,7 +81,6 @@
 				DD85946CDAC75AB510965903 /* Pods-Runner.release.xcconfig */,
 				63F873432404DE56D3BBD3B0 /* Pods-Runner.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -390,7 +389,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.noteStoryFlutter;
+				PRODUCT_BUNDLE_IDENTIFIER = "club.wesy.note-story-flutter";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -519,7 +518,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.noteStoryFlutter;
+				PRODUCT_BUNDLE_IDENTIFIER = "club.wesy.note-story-flutter";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -542,7 +541,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.noteStoryFlutter;
+				PRODUCT_BUNDLE_IDENTIFIER = "club.wesy.note-story-flutter";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSIONING_SYSTEM = "apple-generic";
 			};

@@ -3,6 +3,13 @@ import 'package:note_story_flutter/tabs/recommand.dart';
 import 'package:note_story_flutter/tabs/all.dart';
 
 
+const textStyle = TextStyle(
+  fontSize: 12.0,
+  color: Colors.white,
+  fontFamily: 'OpenSans',
+  fontWeight: FontWeight.w600
+);
+
 class ClubPage extends StatelessWidget {
   static const BottomNavigationBarItem navItem = BottomNavigationBarItem(
     icon: Icon(Icons.home),
@@ -45,7 +52,24 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   TabBar getTabBar() {
     return new TabBar(
-      tabs: <Tab>[
+      // indicatorPadding: EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 0.0),
+      // labelPadding: EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 0.0),
+      // indicator: UnderlineTabIndicator(
+      //   borderSide: BorderSide(color: Colors.white, width: 3.0),
+      //   insets: EdgeInsets.fromLTRB(50.0, 0.0, 50.0, -4.0),
+      // ),
+      // unselectedLabelColor: Color(0xFFc9c9c9),
+      // unselectedLabelStyle: textStyle.copyWith(
+      //     fontSize: 20.0,
+      //     color: Color(0xFFc9c9c9),
+      //     fontWeight: FontWeight.w700),
+      isScrollable: true,
+      labelPadding: EdgeInsets.only(right: 20.0, left: 20.0),
+      tabs: [
+        // new Container(
+        //   width: 30.0,
+        //   child: new Tab(text: '推荐'),
+        // ),
         new Tab(
           text: "推荐",
           // set icon to the tab
@@ -73,18 +97,43 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return new Scaffold(
       // Appbar
-        appBar: new AppBar(
-          // Title
-          title: getTabBar(),
-          // Set the background color of the App Bar
-          backgroundColor: Colors.blue,
-          // Set the bottom property of the Appbar to include a Tab Bar
-          // bottom: getTabBar()
+      // appBar: new AppBar(
+      //   // Title
+      //   title: getTabBar(),
+      //   // Set the background color of the App Bar
+      //   backgroundColor: Colors.blue,
+      //   // Set the bottom property of the Appbar to include a Tab Bar
+      //   // bottom: getTabBar()
+      // ),
+      appBar: new AppBar(
+        flexibleSpace: new Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            getTabBar()
+          ],
         ),
-        // Set the TabBar view as the body of the Scaffold
-        body: getTabBarView(<Widget>[
-          new RecommandTab(),
-          new AllTab()
-        ]));
+      ),
+      // appBar: new PreferredSize(
+      //   preferredSize: Size.fromHeight(kToolbarHeight),
+      //   child: new Container(
+      //     color: Colors.blue,
+      //     child: new SafeArea(
+      //       child: getTabBar()
+      //       // Column(
+      //       //   children: <Widget>[
+      //       //     new Expanded(child: new Container()),
+      //       //     getTabBar(),
+      //       //   ],
+      //       // ),
+      //     ),
+      //   ),
+      // ),
+      // Set the TabBar view as the body of the Scaffold
+      body: getTabBarView(<Widget>[
+        new RecommandTab(),
+        new AllTab()
+      ])
+    );
   }
 }

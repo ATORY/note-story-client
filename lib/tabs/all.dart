@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import 'package:note_story_flutter/models/story.dart';
 import 'package:note_story_flutter/screens/detail_page.dart';
-import 'package:note_story_flutter/screens/web_view.dart';
+import 'package:note_story_flutter/tabs/story_card.dart';
 
 String allViewQuery = """
   query RllViewQuery(\$after: String, \$first: Int) {
@@ -11,6 +12,16 @@ String allViewQuery = """
         edges {
           node {
             id
+            title
+            intro
+            tags
+            publishTime
+            publisher {
+              id
+              email
+              nickname
+              avator
+            }
           }
         }
         pageInfo {
@@ -31,7 +42,7 @@ class AllTab extends StatefulWidget {
 class QueryFetchMoreState extends State<AllTab> {
   bool _init = false;
   bool _loading = true;
-  List _edges = [];
+  List<Story> _edges = [];
   List<GraphQLError> _errors;
   bool _hasMore = false;
 
@@ -59,9 +70,10 @@ class QueryFetchMoreState extends State<AllTab> {
           _errors = result.errors;
         });
       } else {
+        List edges = result.data['allViewer']['stories']['edges'];
         setState(() {
           _loading = false;
-          _edges = result.data['allViewer']['stories']['edges'];
+          _edges = edges.map((item) => Story.fromJson(item['node'])).toList();
           _hasMore = result.data['allViewer']['stories']['pageInfo']['hasNextPage'];
         });
       }
@@ -87,13 +99,28 @@ class QueryFetchMoreState extends State<AllTab> {
         _errors = result.errors;
       });
     } else {
-      List newEdges = [..._edges, ...result.data['allViewer']['stories']['edges']];
+      List newEdges = result.data['allViewer']['stories']['edges'];
+      List<Story> nextEdges = [
+        ..._edges,
+        ...newEdges.map((item) => Story.fromJson(item['node'])).toList()
+      ];
+      // List newEdges = [..._edges, ];
       setState(() {
         _loading = false;
-        _edges = newEdges;
+        _edges = nextEdges;
         _hasMore = result.data['allViewer']['stories']['pageInfo']['hasNextPage'];
       });
     }
+  }
+
+  void _navToDetail(BuildContext context, Story story) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetailScreen(story: story)
+        // builder: (context) => WebViewContainer('http://bing.com')
+      ),
+    );
   }
 
   @override
@@ -108,32 +135,28 @@ class QueryFetchMoreState extends State<AllTab> {
     }
 
     return new Container(
-      child: ListView.builder(
-        itemCount: _edges.length + 1,
-        itemBuilder: (context, index) {
-          return (index == _edges.length ) ?
-            Container(
-              color: Colors.greenAccent,
-              child: FlatButton(
-                child: _hasMore ? Text("Load More") : Text("没有了。。"),
-                onPressed: _hasMore ? () {
-                  _fetchMore({ 'after': _edges[index - 1]['node']['id']});
-                } : () {},
-              ),
-            ) : ListTile(
-              title: Text(_edges[index]['node']['id']),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DetailScreen(id: _edges[index]['node']['id'])
-                    // builder: (context) => WebViewContainer('http://bing.com')
-                  ),
-                );
-              },
-            );
-        }
-      ),
+      child: Scrollbar(
+        child: ListView.builder(
+          itemCount: _edges.length + 1,
+          itemBuilder: (context, index) {
+            return (index == _edges.length ) ?
+              Container(
+                color: Colors.greenAccent,
+                child: FlatButton(
+                  child: _hasMore ? Text("Load More") : Text("没有了。。"),
+                  onPressed: _hasMore ? () {
+                    _fetchMore({ 'after': _edges[index - 1].id});
+                  } : () {},
+                ),
+              ) : StoryCard(story: _edges[index], tapFun: () {
+                _navToDetail(context, _edges[index]);
+              });
+          },
+          // separatorBuilder: (context, index) {
+          //   return Divider();
+          // },
+        ),
+      )
     );
   }
 }
