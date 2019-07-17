@@ -19,7 +19,7 @@ class StoryCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.fromLTRB(0, 8.0, 0, 8.0),
+                padding: EdgeInsets.fromLTRB(0, 8.0, 0, 5.0),
                 child: Text(
                   story.title,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)
@@ -49,11 +49,15 @@ class StoryCard extends StatelessWidget {
                     ...story.tags.map((item) => Container(
                       margin: EdgeInsets.fromLTRB(3, 0, 0, 0),
                       padding: EdgeInsets.fromLTRB(2, 1, 2, 1),
-                      color: Colors.blue,
+                      color: Theme.of(context).backgroundColor,
+                      // decoration: new BoxDecoration(
+                      //   // color: Colors.green,
+                      //   borderRadius: new BorderRadius.all(const Radius.circular(2.0))
+                      // ),
                       child: Text(
                         item,
                         style: TextStyle(
-                          backgroundColor: Colors.blue,
+                          // backgroundColor: ,
                           color: Colors.white,
                           fontSize: 12.0
                         )

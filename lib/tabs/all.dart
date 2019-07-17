@@ -16,11 +16,13 @@ String allViewQuery = """
             intro
             tags
             publishTime
+            clientURL
             publisher {
               id
               email
               nickname
               avator
+              banner
             }
           }
         }

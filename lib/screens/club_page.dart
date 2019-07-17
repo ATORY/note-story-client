@@ -13,7 +13,7 @@ const textStyle = TextStyle(
 class ClubPage extends StatelessWidget {
   static const BottomNavigationBarItem navItem = BottomNavigationBarItem(
     icon: Icon(Icons.home),
-    title: Text('Home'),
+    title: Text('club'),
   );
 
   @override
@@ -64,6 +64,8 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
       //     color: Color(0xFFc9c9c9),
       //     fontWeight: FontWeight.w700),
       isScrollable: true,
+      indicatorWeight: 3,
+      indicatorColor: Colors.white,
       labelPadding: EdgeInsets.only(right: 20.0, left: 20.0),
       tabs: [
         // new Container(
@@ -106,12 +108,17 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
       //   // bottom: getTabBar()
       // ),
       appBar: new AppBar(
-        flexibleSpace: new Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            getTabBar()
-          ],
+        elevation: 0,
+        backgroundColor: Color.fromRGBO(68, 186, 189, 1),
+        flexibleSpace: Padding(
+          padding: EdgeInsets.only(left: 10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              getTabBar()
+            ],
+          ),
         ),
       ),
       // appBar: new PreferredSize(

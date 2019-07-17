@@ -12,12 +12,14 @@ class Story {
     this.publishTime,
     this.publisher,
     this.tags,
+    this.clientURL,
   });
 
   String id;
   String title;
   String intro;
   String publishTime;
+  String clientURL;
   List<String> tags;
   User publisher;
 
@@ -54,6 +56,7 @@ class Story {
       id: map['id'] as String,
       title: map['title'] as String,
       intro: map['intro'] ?? '',
+      clientURL: map['clientURL'] as String,
       publishTime: formatDate(time, [yyyy, '-', mm, '-', dd, ' ', hh, ':', mm]),
       publisher: publisher,
       tags: map['tags'].cast<String>()

@@ -13,7 +13,9 @@ String get host {
   return 'localhost';
 }
 
-final String GRAPHQL_ENDPOINT = 'http://$host:3030/graphql';
+// final String GRAPHQL_ENDPOINT = 'http://$host:3030/graphql';
+final String GRAPHQL_ENDPOINT = 'https://wesy.club/graphql';
+const Color themeColor = Color.fromRGBO(68, 186, 189, 1);
 
 void main() => runApp(App());
 
@@ -25,7 +27,10 @@ class App extends StatelessWidget {
       child: MaterialApp(
         // title: 'NoteStory',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(primarySwatch: Colors.blue),
+        theme: ThemeData(
+          iconTheme: const IconThemeData(color: themeColor),
+          backgroundColor: themeColor
+        ),
         home: HomePage(title: "NoteStory"),
       ),
     );
@@ -62,7 +67,8 @@ class HomePageState extends State<HomePage> {
           MePage.navItem
         ],
         currentIndex: _selectIndex,
-        selectedItemColor: Colors.amber[800],
+        // backgroundColor: Color.fromRGBO(68, 186, 189, 1),
+        selectedItemColor: themeColor,
         onTap: _navigateTo,
       ),
     );
