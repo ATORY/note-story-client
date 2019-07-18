@@ -1,8 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:note_story_flutter/client_provider.dart';
+import 'package:note_story_flutter/models/user.dart';
 import 'package:note_story_flutter/screens/me_page.dart';
 import 'package:note_story_flutter/screens/club_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 import './client_provider.dart';
 
@@ -17,7 +21,48 @@ final String GRAPHQL_ENDPOINT = 'http://$host:3030/graphql';
 // final String GRAPHQL_ENDPOINT = 'https://wesy.club/graphql';
 const Color themeColor = Color.fromRGBO(68, 186, 189, 1);
 
-void main() => runApp(App());
+String userInfoQuery = """
+  query userInfoQuery(\$token: String!) {
+    userInfo(token: \$token) {
+      id
+      email
+      nickname
+      intro
+      avator
+      banner
+    }
+  }
+""";
+
+void initUser() async {
+  GraphQLClient graphqlClient = GraphQLClient(
+    cache: cache,
+    link: HttpLink(uri: GRAPHQL_ENDPOINT) as Link
+  );
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String token = prefs.getString("token") ?? "";
+  if (token == "") return;
+  final QueryResult result = await graphqlClient.query(QueryOptions(
+    document: userInfoQuery,
+    variables: {
+      'token': token,
+    }
+  ));
+  if (result.errors != null) {
+    print('err hanpend');
+    return;
+  }
+  Map userInfo = result.data['userInfo'];
+  Self(
+    id: userInfo['id'] as String
+  );
+}
+
+void main() {
+  initUser();
+  return runApp(App());
+}
+// void main() => runApp(App());
 
 class App extends StatelessWidget {
   @override

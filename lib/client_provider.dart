@@ -49,9 +49,9 @@ class ClientProvider extends StatelessWidget {
     @required String uri,
     String subscriptionUri,
   }) : client = clientFor(
-          uri: uri,
-          subscriptionUri: subscriptionUri,
-        );
+    uri: uri,
+    subscriptionUri: subscriptionUri,
+  );
 
   final Widget child;
   final ValueNotifier<GraphQLClient> client;

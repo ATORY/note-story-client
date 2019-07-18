@@ -1,5 +1,38 @@
 import 'package:meta/meta.dart';
 
+class Self {
+  static Self _instance;
+  factory Self({
+    String id,
+    String email,
+    String nickname,
+    String avator,
+    String banner
+  }) {
+    _instance ??= Self._internalConstructor(
+      id,
+      email,
+      nickname,
+      avator,
+      banner
+    );
+    return _instance;
+  }
+  Self._internalConstructor(
+    this.id,
+    this.email,
+    this.nickname,
+    this.avator,
+    this.banner
+  );
+
+  String id;
+  String email;
+  String nickname;
+  String avator;
+  String banner;
+}
+
 class User {
   User({
     @required this.id,
