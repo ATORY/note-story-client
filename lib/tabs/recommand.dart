@@ -1,14 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import 'package:note_story_flutter/models/story.dart';
+import 'package:note_story_flutter/screens/detail_page.dart';
+import 'package:note_story_flutter/tabs/story_card.dart';
 
 String homeViewQuery = """
-  query ReadRepositories(\$after: String, \$first: Int) {
+  query HomeViewerQuery(\$after: String, \$first: Int) {
     homeViewer {
       stories(after: \$after, first: \$first) {
         edges {
           node {
             id
+            title
+            intro
+            tags
+            publishTime
+            clientURL
+            publisher {
+              id
+              email
+              nickname
+              avator
+              banner
+            }
           }
         }
         pageInfo {
@@ -27,6 +42,17 @@ class RecommandTab extends StatefulWidget {
 }
 
 class RecommandTabState extends State<RecommandTab> {
+
+  void _navToDetail(BuildContext context, Story story) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetailScreen(story: story)
+        // builder: (context) => WebViewContainer('http://bing.com')
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Query(
@@ -48,43 +74,24 @@ class RecommandTabState extends State<RecommandTab> {
 
         // it can be either Map or List
         List edges = result.data['homeViewer']['stories']['edges'];
-        bool hasNextPage = result.data['homeViewer']['stories']['pageInfo']['hasNextPage'];
+        // bool hasNextPage = result.data['homeViewer']['stories']['pageInfo']['hasNextPage'];
+        List<Story> _edges = edges.map((item) => Story.fromJson(item['node'])).toList();
         // print(edges);
         // print(hasNextPage);
         // return Text("data");
-        return ListView.builder(
-          itemCount: edges.length,
-          itemBuilder: (context, index) {
-            final node = edges[index]['node'];
-
-            return Text(node['id']);
-        });
+        return new Container(
+          child: Scrollbar(
+            child: ListView.builder(
+              itemCount: _edges.length,
+              itemBuilder: (context, index) {
+                return StoryCard(story: _edges[index], tapFun: () {
+                  _navToDetail(context, _edges[index]);
+                });
+              }
+            ),
+          )
+        );
       },
     );
   }
-
-  // Widget build(BuildContext context) {
-  //   return new Scaffold(
-  //     backgroundColor: Colors.green,
-  //     body: new Container(
-  //       child: new Center(
-  //         child: new Column(
-  //           // center the children
-  //           mainAxisAlignment: MainAxisAlignment.center,
-  //           children: <Widget>[
-  //             new Icon(
-  //               Icons.adb,
-  //               size: 160.0,
-  //               color: Colors.white,
-  //             ),
-  //             new Text(
-  //               "Second Tab",
-  //               style: new TextStyle(color: Colors.white),
-  //             )
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 }

@@ -6,7 +6,7 @@ import 'package:note_story_flutter/screens/detail_page.dart';
 import 'package:note_story_flutter/tabs/story_card.dart';
 
 String allViewQuery = """
-  query RllViewQuery(\$after: String, \$first: Int) {
+  query AllViewQuery(\$after: String, \$first: Int) {
     allViewer {
       stories(after: \$after, first: \$first) {
         edges {
