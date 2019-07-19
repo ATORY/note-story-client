@@ -5,34 +5,7 @@ import 'package:note_story_flutter/models/story.dart';
 import 'package:note_story_flutter/screens/detail_page.dart';
 import 'package:note_story_flutter/tabs/story_card.dart';
 
-String allViewQuery = """
-  query AllViewQuery(\$after: String, \$first: Int) {
-    allViewer {
-      stories(after: \$after, first: \$first) {
-        edges {
-          node {
-            id
-            title
-            intro
-            tags
-            publishTime
-            clientURL
-            publisher {
-              id
-              email
-              nickname
-              avator
-              banner
-            }
-          }
-        }
-        pageInfo {
-          hasNextPage
-        }
-      }
-    }
-  }
-""";
+import 'package:note_story_flutter/utils/graphqls.dart';
 
 class AllTab extends StatefulWidget {
   @override

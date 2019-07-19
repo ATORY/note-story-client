@@ -1,12 +1,15 @@
 import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:flutter/material.dart';
 import 'package:note_story_flutter/client_provider.dart';
 import 'package:note_story_flutter/models/user.dart';
+import 'package:note_story_flutter/screens/add_page.dart';
 import 'package:note_story_flutter/screens/me_page.dart';
 import 'package:note_story_flutter/screens/club_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+
+import 'package:note_story_flutter/utils/graphqls.dart';
 
 import './client_provider.dart';
 
@@ -20,19 +23,6 @@ String get host {
 final String GRAPHQL_ENDPOINT = 'http://$host:3030/graphql';
 // final String GRAPHQL_ENDPOINT = 'https://wesy.club/graphql';
 const Color themeColor = Color.fromRGBO(68, 186, 189, 1);
-
-String userInfoQuery = """
-  query userInfoQuery(\$token: String!) {
-    userInfo(token: \$token) {
-      id
-      email
-      nickname
-      intro
-      avator
-      banner
-    }
-  }
-""";
 
 void initUser() async {
   GraphQLClient graphqlClient = GraphQLClient(
@@ -54,7 +44,12 @@ void initUser() async {
   }
   Map userInfo = result.data['userInfo'];
   Self(
-    id: userInfo['id'] as String
+    token: token,
+    id: userInfo['id'] as String,
+    email: userInfo['email'] as String,
+    nickname: userInfo['nickname'] as String,
+    avator: userInfo['avator'] as String,
+    banner: userInfo['banner'] as String,
   );
 }
 
@@ -116,6 +111,53 @@ class HomePageState extends State<HomePage> {
         selectedItemColor: themeColor,
         onTap: _navigateTo,
       ),
+      floatingActionButton: FloatingActionButton(
+        elevation: 0,
+        onPressed: () {
+          // Navigator.push(
+          //   context,
+          //   AddPateRoute(
+          //     builder: (context) => AddPage()
+          //   ),
+          // );
+          Navigator.of(context).push(
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) => AddPage(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                var begin = Offset(0.0, 1.0);
+                var end = Offset.zero;
+                var curve = Curves.ease;
+                var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                return SlideTransition(
+                  position: animation.drive(tween),
+                  child: child,
+                );
+              }
+            )
+          );
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Theme.of(context).backgroundColor,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
+
+class AddPateRoute<T> extends MaterialPageRoute<T> {
+  AddPateRoute({WidgetBuilder builder, RouteSettings settings}): super(builder: builder, settings: settings);
+
+  @override
+  Widget buildTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+    // TODO: implement buildTransitions
+    if (settings.isInitialRoute) return child;
+    return new FadeTransition(opacity: animation, child: child);
+  }
+}
+
+
+// PageRouteBuilder(
+//     pageBuilder: (context, animation, secondaryAnimation) => Page2(),
+//     transitionsBuilder: (context, animation, secondaryAnimation, child) {
+//       return child;
+//     },

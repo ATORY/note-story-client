@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:note_story_flutter/models/user.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+
+import 'package:note_story_flutter/utils/graphqls.dart';
+import 'package:note_story_flutter/models/story.dart';
+import 'package:note_story_flutter/tabs/story_card.dart';
 
 class UserPage extends StatefulWidget {
   UserPage({Key key, this.user}) : super(key: key);
@@ -14,18 +19,58 @@ const kExpandedHeight = 150.0;
 
 class _UserPageState extends State<UserPage> {
   ScrollController _scrollController;
+  GraphQLClient _client;
+  double _offset = 0.0;
+
+  bool _hasMore = false;
+  bool _loading = true;
+  List<Story> _edges = [];
 
   @override
   void initState() {
     super.initState();
 
     _scrollController = ScrollController()
-      ..addListener(() => setState(() {}));
+      ..addListener(() => setState(() {
+        _offset = _scrollController.offset;
+      }));
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _client = GraphQLProvider.of(context).value;
+    _initialQuery();
+  }
+
+  void _initialQuery() async {
+    final QueryResult result = await _client.query(QueryOptions(
+      document: userProfileQuery,
+      variables: {
+        'openId': widget.user.id,
+        'after': '',
+        'first': 10
+      }
+    ));
+    if (result.errors != null) {
+      print('errr');
+        // setState(() {
+        //   _errors = result.errors;
+        // });
+    } else {
+      // print(result.data);
+      Map profile = result.data['userProfile']; 
+      List edges = profile['stories']['edges'];
+      setState(() {
+        _loading = false;
+        _edges = edges.map((item) => Story.fromJson(item['node'])).toList();
+        _hasMore = profile['stories']['pageInfo']['hasNextPage'];
+      });
+    }
   }
 
   bool get _showTitle {
-    return _scrollController.hasClients
-        && _scrollController.offset > kExpandedHeight - kToolbarHeight;
+    return _scrollController.hasClients && _offset > kExpandedHeight - kToolbarHeight;
   }
 
   @override
@@ -42,13 +87,23 @@ class _UserPageState extends State<UserPage> {
             expandedHeight: kExpandedHeight,
             title: _showTitle ? Text(widget.user.nickname) : null,
             flexibleSpace: _showTitle ? null : FlexibleSpaceBar(
-              // title: new Column(
-              //   mainAxisAlignment: MainAxisAlignment.end,
-              //   children: <Widget>[
-              //     Text('_SliverAppBar'),
-              //     Text('subtitle'),
-              //   ],
-              // ),
+              title: Container(
+                child: CircleAvatar(
+                  radius: 30.0,
+                  foregroundColor: Colors.white,
+                  backgroundImage: NetworkImage(
+                    widget.user.avator
+                  ),
+                ), 
+                width: 60.0,
+                height: 60.0,
+                // color: Theme.of(_context).backgroundColor,
+                padding: const EdgeInsets.all(1.2), // borde width
+                decoration: new BoxDecoration(
+                  color: Colors.white, // border color
+                  shape: BoxShape.circle,
+                )
+              ),
               background: Image.network(
                 widget.user.banner,
                 fit: BoxFit.cover,
@@ -56,9 +111,9 @@ class _UserPageState extends State<UserPage> {
             ),
           ),
           SliverList(
-            delegate: SliverChildListDelegate(List<Text>.generate(100, (int i) {
-              return Text("List item $i");
-            })),
+            delegate: SliverChildListDelegate([
+              ..._edges.map((item) => UserStoryCard(story: item, tapFun: () {})).toList()
+            ]),
           ),
         ]
       ),

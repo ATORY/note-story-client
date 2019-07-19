@@ -2,8 +2,6 @@ import 'package:meta/meta.dart';
 import 'package:date_format/date_format.dart';
 import 'package:note_story_flutter/models/user.dart';
 
-// final dateFormat = new DateFormat('yyyy-MM-dd hh:mm');
-
 class Story {
   Story({
     @required this.id,
@@ -23,33 +21,14 @@ class Story {
   List<String> tags;
   User publisher;
 
-  // Review copyWith({
-  //   // Episode episode,
-  //   int stars,
-  //   String commentary,
-  // }) {
-  //   return Review(
-  //     // episode: episode ?? this.episode,
-  //     stars: stars ?? this.stars,
-  //     commentary: commentary ?? this.commentary,
-  //   );
-  // }
-
-  // Map<String, dynamic> toJson() {
-  //   // assert(episode != null && stars != null);
-
-  //   return <String, dynamic>{
-  //     // 'episode': episodeToJson(episode),
-  //     'stars': stars,
-  //     'commentary': commentary,
-  //   };
-  // }
-
   static Story fromJson(Map<String, dynamic> map) {
     String publishTime = map['publishTime'] as String;
-    DateTime time = DateTime.parse(publishTime);
-    
-    User publisher = User.fromJson(map['publisher']);
+    DateTime time = DateTime.parse(publishTime);  
+    User publisher;
+  
+    if (map['publisher'] != null) {
+      publisher = User.fromJson(map['publisher']);
+    }
 
     return Story(
           // episode: episodeFromJson(map['episode'] as String),

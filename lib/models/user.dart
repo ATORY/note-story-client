@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 class Self {
   static Self _instance;
   factory Self({
+    String token,
     String id,
     String email,
     String nickname,
@@ -10,6 +11,7 @@ class Self {
     String banner
   }) {
     _instance ??= Self._internalConstructor(
+      token,
       id,
       email,
       nickname,
@@ -19,6 +21,7 @@ class Self {
     return _instance;
   }
   Self._internalConstructor(
+    this.token,
     this.id,
     this.email,
     this.nickname,
@@ -26,6 +29,7 @@ class Self {
     this.banner
   );
 
+  String token;
   String id;
   String email;
   String nickname;
