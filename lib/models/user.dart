@@ -2,6 +2,17 @@ import 'package:meta/meta.dart';
 
 class Self {
   static Self _instance;
+
+  // void set theOne(String token, Map userInfo) {
+  //   _instance = Self._internalConstructor(
+  //     token,
+  //     userInfo['id'] as String,
+  //     userInfo['email'] as String,
+  //     userInfo['nickname'] as String,
+  //     userInfo['avator'] as String,
+  //     userInfo['banner'] as String,
+  //   );
+  // }
   factory Self({
     String token,
     String id,
@@ -29,6 +40,21 @@ class Self {
     this.banner
   );
 
+  void destroy() {
+    _instance = null;
+  }
+
+  void rebuild(String token, id, email, nickname, avator, banner) {
+    _instance = Self._internalConstructor(
+      token,
+      id,
+      email,
+      nickname,
+      avator,
+      banner
+    );
+  }
+
   String token;
   String id;
   String email;
@@ -38,6 +64,7 @@ class Self {
 }
 
 class User {
+
   User({
     @required this.id,
     @required this.email,

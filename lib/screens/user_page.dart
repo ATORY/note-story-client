@@ -5,6 +5,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:note_story_flutter/utils/graphqls.dart';
 import 'package:note_story_flutter/models/story.dart';
 import 'package:note_story_flutter/tabs/story_card.dart';
+import 'package:note_story_flutter/screens/detail_page.dart';
 
 class UserPage extends StatefulWidget {
   UserPage({Key key, this.user}) : super(key: key);
@@ -22,6 +23,7 @@ class _UserPageState extends State<UserPage> {
   GraphQLClient _client;
   double _offset = 0.0;
 
+  bool _hasFollow = false;
   bool _hasMore = false;
   bool _loading = true;
   List<Story> _edges = [];
@@ -61,8 +63,10 @@ class _UserPageState extends State<UserPage> {
       // print(result.data);
       Map profile = result.data['userProfile']; 
       List edges = profile['stories']['edges'];
+      bool hasFollow = profile['hasFollow'];
       setState(() {
         _loading = false;
+        _hasFollow = hasFollow;
         _edges = edges.map((item) => Story.fromJson(item['node'])).toList();
         _hasMore = profile['stories']['pageInfo']['hasNextPage'];
       });
@@ -71,6 +75,15 @@ class _UserPageState extends State<UserPage> {
 
   bool get _showTitle {
     return _scrollController.hasClients && _offset > kExpandedHeight - kToolbarHeight;
+  }
+
+  void _navToDetail(BuildContext context, Story story) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetailScreen(story: story)
+      ),
+    );
   }
 
   @override
@@ -109,15 +122,44 @@ class _UserPageState extends State<UserPage> {
                 fit: BoxFit.cover,
               )
             ),
+            actions: <Widget>[
+              !_hasFollow ? FlatButton.icon(
+                // padding: EdgeInsetsGeometry.lerp(a, b, t),
+                label: Text("关注", style: TextStyle(color: Colors.white, fontSize: 16)),
+                icon: Icon(Icons.add, color: Colors.white,),
+                onPressed: () {
+                },
+              ) : FlatButton.icon(
+                // padding: EdgeInsetsGeometry.lerp(a, b, t),
+                label: Text("取消关注", style: TextStyle(color: Colors.white, fontSize: 16)),
+                icon: Icon(Icons.add, color: Colors.white,),
+                onPressed: () {
+                },
+              )
+            ],
           ),
           SliverList(
             delegate: SliverChildListDelegate([
-              ..._edges.map((item) => UserStoryCard(story: item, tapFun: () {})).toList()
+              // Text("data"),
+              ..._edges.map((item) => UserStoryCard(story: item, tapFun: () {
+                item.publisher = widget.user;
+                _navToDetail(context, item);
+              })).toList()
             ]),
           ),
         ]
       ),
     );
+  }
+}
+
+class UserInfo extends StatelessWidget implements PreferredSizeWidget {
+  Size get preferredSize {
+    return new Size.fromHeight(20.0);
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Text("data");
   }
 }
 

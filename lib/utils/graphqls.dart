@@ -46,14 +46,16 @@ String userProfileQuery = """
       nickname
       avator
       banner
+      hasFollow
       stories: publishedStories(after: \$after, first: \$first) {
         edges {
           node {
             id
             title
             intro
-            publishTime
             tags
+            publishTime
+            clientURL
           }
         }
         pageInfo {

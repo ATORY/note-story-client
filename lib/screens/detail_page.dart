@@ -1,4 +1,4 @@
-import 'dart:async';
+// import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -14,7 +14,7 @@ class DetailScreen extends StatefulWidget {
 
 class _WebViewContainerState extends State<DetailScreen> {
   Story _story;
-  final Completer<WebViewController> _controller = Completer<WebViewController>();
+  // final Completer<WebViewController> _controller = Completer<WebViewController>();
   final _key = UniqueKey();
   bool _isLoadingPage;
   _WebViewContainerState(this._story);

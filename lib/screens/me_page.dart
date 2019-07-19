@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:note_story_flutter/screens/login_page.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+// import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:note_story_flutter/screens/setting_page.dart';
+import 'package:note_story_flutter/tabs/me/followed.dart';
 import 'package:note_story_flutter/tabs/me/profile.dart';
 import 'package:note_story_flutter/tabs/me/publish.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:note_story_flutter/models/user.dart';
 import 'package:note_story_flutter/utils/animations.dart';
 
@@ -39,14 +40,14 @@ class _MePageState extends State<MePage> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _tabController = new TabController(length: 2, vsync: this);
+    _tabController = new TabController(length: 3, vsync: this);
     _scrollController = ScrollController()
       ..addListener(() => setState(() {
         _offset = _scrollController.offset;
       }));
   }
 
-   bool get _showTitle {
+  bool get _showTitle {
     return _scrollController.hasClients
         && _offset > kExpandedHeight - kToolbarHeight;
   }
@@ -61,10 +62,6 @@ class _MePageState extends State<MePage> with SingleTickerProviderStateMixin {
             child: new Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                new Text(
-                  '$counter',
-                  textScaleFactor: 10.0,
-                ),
                 new RaisedButton(
                   onPressed: () {
                     Navigator.of(context).push(
@@ -130,7 +127,7 @@ class _MePageState extends State<MePage> with SingleTickerProviderStateMixin {
               delegate: _SliverAppBarDelegate(
                 TabBar(
                   isScrollable: true,
-                  indicatorWeight: 2,
+                  indicatorWeight: 3,
                   indicatorColor: Theme.of(context).backgroundColor,
                   labelPadding: EdgeInsets.only(right: 20.0, left: 20.0),
                   controller: _tabController,
@@ -139,6 +136,7 @@ class _MePageState extends State<MePage> with SingleTickerProviderStateMixin {
                   tabs: <Widget>[
                     Profile.tab,
                     Publish.tab,
+                    Followed.tab
                   ],
                 )
               )
@@ -149,7 +147,8 @@ class _MePageState extends State<MePage> with SingleTickerProviderStateMixin {
           controller: _tabController,
           children: <Widget>[
             Profile(),
-            Publish()
+            Publish(),
+            Followed()
           ],
         ),
       ),
@@ -173,7 +172,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
     return new Container(
       color: Colors.white,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [_tabBar],
       )
     );

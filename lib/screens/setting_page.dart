@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:note_story_flutter/models/user.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Setting extends StatelessWidget {
   @override
@@ -15,6 +18,15 @@ class Setting extends StatelessWidget {
         child: new Center(
           child: Text("Setting"),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Text("logout"),
+        onPressed: () async {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString("token", "");
+          Self().destroy();
+          Navigator.of(context).pop();
+        },
       ),
     );
   }

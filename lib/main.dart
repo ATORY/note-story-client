@@ -20,7 +20,7 @@ String get host {
   return 'localhost';
 }
 
-final String GRAPHQL_ENDPOINT = 'http://$host:3030/graphql';
+final GRAPHQL_ENDPOINT = 'http://$host:3030/graphql';
 // final String GRAPHQL_ENDPOINT = 'https://wesy.club/graphql';
 const Color themeColor = Color.fromRGBO(68, 186, 189, 1);
 
@@ -149,7 +149,6 @@ class AddPateRoute<T> extends MaterialPageRoute<T> {
 
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-    // TODO: implement buildTransitions
     if (settings.isInitialRoute) return child;
     return new FadeTransition(opacity: animation, child: child);
   }
