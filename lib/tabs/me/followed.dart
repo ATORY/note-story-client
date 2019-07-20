@@ -16,8 +16,7 @@ class Followed extends StatelessWidget {
         child: new Center(
           child: Column(
             children: <Widget>[
-              Text(Self().email ?? ''),
-              Text(Self().nickname ?? ''),
+              Text('followed'),
             ],
           ),
         ),

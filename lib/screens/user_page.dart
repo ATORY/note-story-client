@@ -144,7 +144,10 @@ class _UserPageState extends State<UserPage> {
               ..._edges.map((item) => UserStoryCard(story: item, tapFun: () {
                 item.publisher = widget.user;
                 _navToDetail(context, item);
-              })).toList()
+              })).toList(),
+              Container(
+                height: 30,
+              )
             ]),
           ),
         ]

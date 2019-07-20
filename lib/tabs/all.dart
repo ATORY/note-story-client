@@ -59,6 +59,8 @@ class QueryFetchMoreState extends State<AllTab> {
   void _fetchMore(
     Map<String, dynamic> variables,
   ) async {
+    if (!_hasMore) return;
+    if (_loading) return;
     setState(() {
       _loading = true;
     });
@@ -93,7 +95,6 @@ class QueryFetchMoreState extends State<AllTab> {
       context,
       MaterialPageRoute(
         builder: (context) => DetailScreen(story: story)
-        // builder: (context) => WebViewContainer('http://bing.com')
       ),
     );
   }
@@ -105,33 +106,44 @@ class QueryFetchMoreState extends State<AllTab> {
       return Text(_errors.toString());
     }
 
-    if (_loading) {
-      return Text('Loading');
-    }
-
-    return new Container(
+    return NotificationListener<ScrollNotification>(
+      onNotification: (ScrollNotification scrollInfo) {
+        if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+          _fetchMore({ 'after': _edges[_edges.length - 1].id});
+        }
+      },
       child: Scrollbar(
         child: ListView.builder(
-          itemCount: _edges.length + 1,
+          itemCount: _edges.length + 2,
           itemBuilder: (context, index) {
-            return (index == _edges.length ) ?
-              Container(
-                color: Colors.greenAccent,
-                child: FlatButton(
-                  child: _hasMore ? Text("Load More") : Text("没有了。。"),
-                  onPressed: _hasMore ? () {
-                    _fetchMore({ 'after': _edges[index - 1].id});
-                  } : () {},
+            if (index == _edges.length) {
+              return Container(
+                // color: Colors.greenAccent,
+                child: Container(
+                  alignment: FractionalOffset.center,
+                  child: !_hasMore ?
+                    Text("没有了。。", style: TextStyle(color: Colors.grey, ),) :
+                    CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).backgroundColor),
+                    ),
                 ),
-              ) : StoryCard(story: _edges[index], tapFun: () {
-                _navToDetail(context, _edges[index]);
-              });
+              );
+            }
+            if (index == _edges.length + 1) {
+              return Container(
+                height: 30,
+              );
+            }
+            return StoryCard(story: _edges[index], tapFun: () {
+              _navToDetail(context, _edges[index]);
+            });
           },
           // separatorBuilder: (context, index) {
           //   return Divider();
           // },
         ),
-      )
+      ),
     );
+    
   }
 }
