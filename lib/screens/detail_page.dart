@@ -4,6 +4,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import 'package:note_story_flutter/screens/user_page.dart';
 import 'package:note_story_flutter/models/story.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailScreen extends StatefulWidget {
   final Story story;
@@ -23,6 +24,15 @@ class _WebViewContainerState extends State<DetailScreen> {
   void initState() {
     super.initState();
     _isLoadingPage = true;
+  }
+
+  void _openExternal(String url) async {
+    // print(url);
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   @override
@@ -82,6 +92,15 @@ class _WebViewContainerState extends State<DetailScreen> {
                 setState(() {
                   _isLoadingPage = false;
                 });
+              },
+              navigationDelegate: (navigationRequest) {
+                // print(navigationRequest.url);
+                if (navigationRequest.url == this._story.clientURL) {
+                  return NavigationDecision.navigate;
+                }
+                _openExternal(navigationRequest.url);
+                return NavigationDecision.prevent;
+                // return NavigationDecision.prevent;
               },
             ),
             _isLoadingPage ? Container(
