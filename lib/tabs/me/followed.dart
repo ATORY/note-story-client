@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:note_story_flutter/models/user.dart';
+// import 'package:note_story_flutter/models/user.dart';
 
 class Followed extends StatelessWidget {
   static const Tab tab = Tab(text: "关注");

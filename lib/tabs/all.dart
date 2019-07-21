@@ -111,6 +111,7 @@ class QueryFetchMoreState extends State<AllTab> {
         if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
           _fetchMore({ 'after': _edges[_edges.length - 1].id});
         }
+        return;
       },
       child: Scrollbar(
         child: ListView.builder(

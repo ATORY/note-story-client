@@ -34,6 +34,18 @@ class _UserPageState extends State<UserPage> {
 
     _scrollController = ScrollController()
       ..addListener(() => setState(() {
+        if (
+          _scrollController.offset >= _scrollController.position.maxScrollExtent &&
+          !_scrollController.position.outOfRange
+        ) {
+          // TODO: _loadMore
+        }
+        if (
+          _scrollController.offset <= _scrollController.position.minScrollExtent &&
+          !_scrollController.position.outOfRange
+        ) {
+          print("reach the top");
+        }
         _offset = _scrollController.offset;
       }));
   }

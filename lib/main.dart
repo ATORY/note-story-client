@@ -20,8 +20,8 @@ String get host {
   return 'localhost';
 }
 
-// final GRAPHQL_ENDPOINT = 'http://$host:3030/graphql';
-const GRAPHQL_ENDPOINT = 'https://wesy.club/graphql';
+final GRAPHQL_ENDPOINT = 'http://$host:3030/graphql';
+// const GRAPHQL_ENDPOINT = 'https://wesy.club/graphql';
 const Color themeColor = Color.fromRGBO(68, 186, 189, 1);
 
 void initUser() async {
