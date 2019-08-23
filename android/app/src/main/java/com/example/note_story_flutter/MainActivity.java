@@ -1,4 +1,4 @@
-package com.example.note_story_flutter;
+package club.wesy.note_story_flutter;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
